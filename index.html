@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>大家的日本語 單字練習 - 手機版</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大家的日本語 單字練習</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,41 +12,62 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      padding: 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 800px;
       width: 100%;
       background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      padding: 30px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      padding: 20px;
       text-align: center;
     }
-    h2 {
-      margin-bottom: 30px;
-    }
     button {
-      padding: 15px 25px;
-      font-size: 18px;
+      padding: 10px 20px;
+      font-size: 16px;
       background-color: #ffb3c1;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      margin: 10px;
-      width: 80%;
-      max-width: 300px;
+      margin: 5px;
     }
     button:hover {
       background-color: #ff8fa3;
+    }
+    .lesson-buttons {
+      margin-bottom: 20px;
+    }
+    .section {
+      display: none;
+    }
+    .active {
+      display: block;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>📚 大家的日本語 單字練習</h2>
-    <button onclick="location.href='lesson1to3.html'">第1～3課</button>
-    <button onclick="location.href='lesson4to6.html'">第4～6課</button>
+        <h2>大家的日本語 單字練習</h2>
+
+    <div class="lesson-buttons">
+      <button onclick="showSection('section1to3')">第1～3課</button>
+      <button onclick="showSection('section4to6')">第4～6課</button>
+    </div>
+
+    <div id="section1to3" class="section active">
+      <iframe src="lesson1to3.html" width="100%" height="600" style="border:none;"></iframe>
+    </div>
+    <div id="section4to6" class="section">
+      <iframe src="lesson4to6.html" width="100%" height="600" style="border:none;"></iframe>
+    </div>
   </div>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
 </body>
 </html>

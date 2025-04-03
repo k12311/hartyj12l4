@@ -1,1 +1,337 @@
-<!-- lesson4to6.html 內容 -->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大家的日本語 第4～6課 單字練習</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff0f6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      padding: 20px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffb3c1;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #ff8fa3;
+    }
+    #word {
+      font-size: 24px;
+      margin: 20px 0 10px;
+    }
+    #meaning {
+      font-size: 20px;
+      margin: 10px 0;
+      color: #555;
+    }
+    img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    .word-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .word-buttons button {
+      margin: 5px;
+      padding: 8px 15px;
+      font-size: 14px;
+      background-color: #ffe0ea;
+    }
+    .word-buttons button:hover {
+      background-color: #ffc1d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://media.karousell.com/media/photos/products/2023/9/16/_____chiikawa___1694857818_93b413ec.jpg" alt="古本">
+    <h2>大家的日本語 第4～6課 單字練習</h2>
+
+    <div>
+      <button onclick="selectLesson(4)">第4課</button>
+      <button onclick="selectLesson(5)">第5課</button>
+      <button onclick="selectLesson(6)">第6課</button>
+    </div>
+
+    <div id="word">請先選擇課次</div>
+    <div id="meaning" style="display: none;"></div>
+
+    <div>得分: <span id="score">0</span></div>
+    <div>最高分: <span id="highscore">0</span></div>
+
+    <button onclick="nextWord()">下一個單字</button>
+    <button onclick="speakWord()">朗讀單字</button>
+    <button onclick="resetScore()">重置得分</button>
+
+    <h3>📚 點選單字立即朗讀：</h3>
+    <div class="word-buttons" id="wordButtons"></div>
+
+    <div id="endScreen" style="display:none; margin-top: 20px;">
+  <h3>🎉 測驗完成！</h3>
+  <p>你的總得分是：<span id="finalScore">0</span> 分</p>
+  <button onclick="goHome()">🔙 回首頁</button>
+</div>
+
+  <script>
+    const lessons = {
+    4: [
+    { jp: "おきます（起きます）", zh: "起床" },
+    { jp: "ねます（寝ます）", zh: "睡覺" },
+    { jp: "はたらきます（働きます）", zh: "工作" },
+    { jp: "やすみます（休みます）", zh: "休息" },
+    { jp: "べんきょうします（勉強します）", zh: "念書" },
+    { jp: "おわります（終わります）", zh: "結束" },
+    { jp: "デパート", zh: "百貨公司" },
+    { jp: "ぎんこう（銀行）", zh: "銀行" },
+    { jp: "ゆうびんきょく（郵便局）", zh: "郵局" },
+    { jp: "としょかん（図書館）", zh: "圖書館" },
+    { jp: "びじゅつかん（美術館）", zh: "美術館" },
+    { jp: "いま（今）", zh: "現在" },
+    { jp: "～じ（～時）", zh: "～點" },
+    { jp: "～ふん（～分）", zh: "～分" },
+    { jp: "はん（半）", zh: "半" },
+    { jp: "なんじ（何時）", zh: "幾點" },
+    { jp: "なんぷん（何分）", zh: "幾分" },
+    { jp: "ごぜん（午前）", zh: "上午" },
+    { jp: "ごご（午後）", zh: "下午" },
+    { jp: "あさ（朝）", zh: "早上" },
+    { jp: "ひる（昼）", zh: "白天" },
+    { jp: "ばん（晩）／よる（夜）", zh: "晚上" },
+    { jp: "おととい", zh: "前天" },
+    { jp: "きのう", zh: "昨天" },
+    { jp: "きょう", zh: "今天" },
+    { jp: "あした", zh: "明天" },
+    { jp: "あさって", zh: "後天" },
+    { jp: "けさ", zh: "今天早上" },
+    { jp: "こんばん", zh: "今晚" },
+    { jp: "やすみ（休み）", zh: "休息、休假" },
+    { jp: "ひるやすみ（昼休み）", zh: "午休" },
+    { jp: "しけん（試験）", zh: "考試" },
+    { jp: "かいぎ（会議）", zh: "會議" },
+    { jp: "えいが（映画）", zh: "電影" },
+    { jp: "まいあさ（毎朝）", zh: "每天早上" },
+    { jp: "まいばん（毎晩）", zh: "每天晚上" },
+    { jp: "まいにち（毎日）", zh: "每天" },
+    { jp: "げつようび（月曜日）", zh: "星期一" },
+    { jp: "かようび（火曜日）", zh: "星期二" },
+    { jp: "すいようび（水曜日）", zh: "星期三" },
+    { jp: "もくようび（木曜日）", zh: "星期四" },
+    { jp: "きんようび（金曜日）", zh: "星期五" },
+    { jp: "どようび（土曜日）", zh: "星期六" },
+    { jp: "にちようび（日曜日）", zh: "星期天" },
+    { jp: "なんようび（何曜日）", zh: "星期幾" },
+    { jp: "～から", zh: "從～" },
+    { jp: "～まで", zh: "到～" },
+    { jp: "～と～", zh: "～和～" },
+    { jp: "ばんごう（番号）", zh: "號碼" },
+    { jp: "なんばん（何番）", zh: "幾號" },
+    { jp: "そちら", zh: "那邊、您那邊" },
+    { jp: "たいへんですね（大変ですね）", zh: "真是辛苦啊。" },
+    { jp: "ニューヨーク", zh: "紐約" },
+    { jp: "ペキン", zh: "北京" },
+    { jp: "ロサンゼルス", zh: "洛杉磯" },
+    { jp: "ロンドン", zh: "倫敦" }
+  ],
+  5: [
+    { jp: "行きます", zh: "去" },
+    { jp: "来ます", zh: "來" },
+    { jp: "帰ります", zh: "回" },
+    { jp: "学校（がっこう）", zh: "學校" },
+    { jp: "スーパー", zh: "超市" },
+    { jp: "駅（えき）", zh: "車站" },
+    { jp: "飛行機（ひこうき）", zh: "飛機" },
+    { jp: "船（ふね）", zh: "船" },
+    { jp: "電車（でんしゃ）", zh: "電車" },
+    { jp: "地下鉄（ちかてつ）", zh: "地下鐵" },
+    { jp: "新幹線（しんかんせん）", zh: "新幹線" },
+    { jp: "バス", zh: "公車、巴士" },
+    { jp: "タクシー", zh: "計程車" },
+    { jp: "自転車（じてんしゃ）", zh: "自行車、腳踏車" },
+    { jp: "歩いて（あるいて）", zh: "步行" },
+    { jp: "人（ひと）", zh: "人" },
+    { jp: "友達（ともだち）", zh: "朋友" },
+    { jp: "彼（かれ）", zh: "他、男朋友" },
+    { jp: "彼女（かのじょ）", zh: "她、女朋友" },
+    { jp: "家族（かぞく）", zh: "家人、家屬" },
+    { jp: "一人で（ひとりで）", zh: "一個人、自己" },
+    { jp: "先週（せんしゅう）", zh: "上週、上星期" },
+    { jp: "今週（こんしゅう）", zh: "本週、這星期" },
+    { jp: "来週（らいしゅう）", zh: "下週、下星期" },
+    { jp: "先月（せんげつ）", zh: "上個月" },
+    { jp: "今月（こんげつ）", zh: "這個月" },
+    { jp: "来月（らいげつ）", zh: "下個月" },
+    { jp: "去年（きょねん）", zh: "去年" },
+    { jp: "今年（ことし）", zh: "今年" },
+    { jp: "来年（らいねん）", zh: "明年" },
+    { jp: "～年（ねん）", zh: "⋯年" },
+    { jp: "何年（なんねん）", zh: "幾年" },
+    { jp: "～月（がつ）", zh: "⋯月" },
+    { jp: "何月（なんがつ）", zh: "幾月" },
+    { jp: "１日（ついたち）", zh: "1號" },
+    { jp: "２日（ふつか）", zh: "2號、兩天" },
+    { jp: "３日（みっか）", zh: "3號、三天" },
+    { jp: "４日（よっか）", zh: "4號、四天" },
+    { jp: "５日（いつか）", zh: "5號、五天" },
+    { jp: "６日（むいか）", zh: "6號、六天" },
+    { jp: "７日（なのか）", zh: "7號、七天" },
+    { jp: "８日（ようか）", zh: "8號、八天" },
+    { jp: "９日（ここのか）", zh: "9號、九天" },
+    { jp: "１０日（とおか）", zh: "10號、十天" },
+    { jp: "１４日（じゅうよっか）", zh: "14號、十四天" },
+    { jp: "２０日（はつか）", zh: "20號、二十天" },
+    { jp: "２４日（にじゅうよっか）", zh: "24號、二十四天" },
+    { jp: "～日（にち）", zh: "⋯號、⋯天" },
+    { jp: "何日（なんにち）", zh: "幾號、幾天" },
+    { jp: "いつ", zh: "什麼時候" },
+    { jp: "誕生日（たんじょうび）", zh: "生日" },
+    { jp: "どうもありがとうございました", zh: "非常感謝。" },
+    { jp: "どういたしまして", zh: "不客氣。" },
+    { jp: "～番線（ばんせん）", zh: "第⋯號月臺" },
+    { jp: "次の（つぎの）", zh: "下一個、下一班" },
+    { jp: "普通（ふつう）", zh: "普通車" },
+    { jp: "急行（きゅうこう）", zh: "快車" },
+    { jp: "特急（とっきゅう）", zh: "特快車" }
+  ],
+  6: [
+  { jp: "食べます（たべます）", zh: "吃" },
+  { jp: "飲みます（のみます）", zh: "喝" },
+  { jp: "吸います（すいます）", zh: "吸" },
+  { jp: "見ます（みます）", zh: "看" },
+  { jp: "聞きます（ききます）", zh: "聽" },
+  { jp: "読みます（よみます）", zh: "閱讀" },
+  { jp: "書きます（かきます）", zh: "書寫" },
+  { jp: "買います（かいます）", zh: "購買" },
+  { jp: "撮ります（とります）", zh: "拍攝〔照片〕" },
+  { jp: "します", zh: "做" },
+  { jp: "会います（あいます）", zh: "〔跟朋友〕見面" },
+  { jp: "ご飯（ごはん）", zh: "白飯、飯" },
+  { jp: "朝ごはん（あさごはん）", zh: "早餐" },
+  { jp: "昼ごはん（ひるごはん）", zh: "午餐" },
+  { jp: "晩ごはん（ばんごはん）", zh: "晚餐" },
+  { jp: "パン", zh: "麵包" },
+  { jp: "卵（たまご）", zh: "蛋" },
+  { jp: "肉（にく）", zh: "肉" },
+  { jp: "魚（さかな）", zh: "魚" },
+  { jp: "野菜（やさい）", zh: "蔬菜" },
+  { jp: "果物（くだもの）", zh: "水果" },
+  { jp: "水（みず）", zh: "水" },
+  { jp: "お茶（おちゃ）", zh: "茶" },
+  { jp: "紅茶（こうちゃ）", zh: "紅茶" },
+  { jp: "牛乳（ぎゅうにゅう／ミルク）", zh: "牛奶" },
+  { jp: "ジュース", zh: "果汁" },
+  { jp: "ビール", zh: "啤酒" },
+  { jp: "お酒（おさけ）", zh: "酒類、日本酒" },
+  { jp: "たばこ", zh: "香菸" },
+  { jp: "手紙（てがみ）", zh: "信" },
+  { jp: "レポート", zh: "報告" },
+  { jp: "写真（しゃしん）", zh: "照片" },
+  { jp: "ビデオ", zh: "影片、錄影帶" },
+  { jp: "店（みせ）", zh: "商店" },
+  { jp: "庭（にわ）", zh: "庭院、院子" },
+  { jp: "宿題（しゅくだい）", zh: "作業" },
+  { jp: "テニス", zh: "網球" },
+  { jp: "サッカー", zh: "足球" },
+  { jp: "お花見（おはなみ）", zh: "賞花" },
+  { jp: "何（なに）", zh: "什麼" },
+  { jp: "いっしょに", zh: "一起" },
+  { jp: "ちょっと", zh: "一會、一點" },
+  { jp: "いつも", zh: "經常、總是" },
+  { jp: "ときどき", zh: "有時" },
+  { jp: "それから", zh: "然後" },
+  { jp: "ええ", zh: "是的" },
+  { jp: "いいですね", zh: "好啊。" },
+  { jp: "わかりました", zh: "我明白了。" },
+  { jp: "何ですか（なんですか）", zh: "什麼事?" },
+  { jp: "じゃ、また[あした]", zh: "那麼，〔明天〕再見。" }
+]
+
+};
+    let currentLesson = [];
+    let currentWord = {};
+    let score = 0;
+    let highscore = localStorage.getItem('highscore_l4to6') || 0;
+    document.getElementById('highscore').textContent = highscore;
+
+    function selectLesson(number) {
+      currentLesson = lessons[number];
+      score = 0;
+      document.getElementById('score').textContent = score;
+      document.getElementById('word').textContent = `已選擇第${number}課，請點選下一個單字或按下方單字`;
+      document.getElementById('meaning').style.display = 'none';
+      renderWordButtons();
+    }
+
+    function nextWord() {
+      if (currentLesson.length === 0) return;
+      currentWord = currentLesson[Math.floor(Math.random() * currentLesson.length)];
+      document.getElementById('word').textContent = currentWord.jp;
+      document.getElementById('meaning').textContent = currentWord.zh;
+      document.getElementById('meaning').style.display = 'block';
+
+      score += 10;
+      document.getElementById('score').textContent = score;
+      if (score > highscore) {
+        highscore = score;
+        localStorage.setItem('highscore_l4to6', highscore);
+        document.getElementById('highscore').textContent = highscore;
+      }
+    }
+
+    function speakWord() {
+      if (currentWord.jp) {
+        const utterance = new SpeechSynthesisUtterance(currentWord.jp);
+        utterance.lang = 'ja-JP';
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    function resetScore() {
+      score = 0;
+      document.getElementById('score').textContent = score;
+    }
+
+    function speakCustomWord(jp) {
+      const utterance = new SpeechSynthesisUtterance(jp);
+      utterance.lang = 'ja-JP';
+      speechSynthesis.speak(utterance);
+    }
+
+    function renderWordButtons() {
+      const container = document.getElementById('wordButtons');
+      container.innerHTML = '';
+      currentLesson.forEach(word => {
+        const btn = document.createElement('button');
+        btn.textContent = `${word.jp} (${word.zh})`;
+        btn.onclick = () => speakCustomWord(word.jp);
+        container.appendChild(btn);
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+
