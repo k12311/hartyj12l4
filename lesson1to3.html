@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大家的日本語 第1～3課 單字練習</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff0f6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      padding: 20px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffb3c1;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #ff8fa3;
+    }
+    #word {
+      font-size: 24px;
+      margin: 20px 0 10px;
+    }
+    #meaning {
+      font-size: 20px;
+      margin: 10px 0;
+      color: #555;
+    }
+    img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    .word-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .word-buttons button {
+      margin: 5px;
+      padding: 8px 15px;
+      font-size: 14px;
+      background-color: #ffe0ea;
+    }
+    .word-buttons button:hover {
+      background-color: #ffc1d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+   <img src="https://c-ssl.duitang.com/uploads/blog/202310/06/n6S7BXB8U909wgY.png" alt="烏薩奇">
+    <h2>大家的日本語 第1～3課 單字練習</h2>
+
+    <div>
+      <button onclick="selectLesson(1)">第1課</button>
+      <button onclick="selectLesson(2)">第2課</button>
+      <button onclick="selectLesson(3)">第3課</button>
+    </div>
+
+    <div id="word">請先選擇課次</div>
+    <div id="meaning" style="display: none;"></div>
+
+    <div>得分: <span id="score">0</span></div>
+    <div>最高分: <span id="highscore">0</span></div>
+
+    <button onclick="nextWord()">下一個單字</button>
+    <button onclick="speakWord()">朗讀單字</button>
+    <button onclick="resetScore()">重置得分</button>
+
+    <h3>📚 點選單字立即朗讀：</h3>
+    <div class="word-buttons" id="wordButtons"></div>
+  </div>
+
+  <script>
+    const lessons = {
+      1: [
+        { jp: "わたし", zh: "我" }, { jp: "あなた", zh: "你" },
+        { jp: "あのひと（あの人）", zh: "那個人、他、她" },
+        { jp: "みなさん", zh: "各位、大家" },
+        { jp: "～さん", zh: "～先生、～小姐" },
+        { jp: "～ちゃん", zh: "～（用於小孩名字後）" },
+        { jp: "～くん", zh: "～君（用於男孩名字後）" },
+        { jp: "～じん", zh: "～人（表國籍）" },
+        { jp: "せんせい（先生）", zh: "老師（不指自己的職業）" },
+        { jp: "きょうし（教師）", zh: "教師（指自己的職業）" },
+        { jp: "がくせい（学生）", zh: "學生" },
+        { jp: "かいしゃいん（会社員）", zh: "公司職員" },
+        { jp: "しゃいん（社員）", zh: "～公司的職員" },
+        { jp: "ぎんこういん（銀行員）", zh: "銀行職員" },
+        { jp: "いしゃ（医者）", zh: "醫生" },
+        { jp: "けんきゅうしゃ（研究者）", zh: "研究人員" },
+        { jp: "エンジニア", zh: "工程師" },
+        { jp: "だいがく（大学）", zh: "大學" },
+        { jp: "びょういん（病院）", zh: "醫院" },
+        { jp: "だれ（どなた）", zh: "誰（哪位）" },
+        { jp: "～さい（～歳）", zh: "～歲" },
+        { jp: "なんさい（おいくつ）", zh: "幾歲" },
+        { jp: "はい", zh: "是" },
+        { jp: "いいえ", zh: "不是" },
+        { jp: "しつれいですが", zh: "對不起，請問…" },
+        { jp: "おなまえは？", zh: "您貴姓？" },
+        { jp: "はじめまして。", zh: "初次見面。" },
+        { jp: "どうぞ よろしく おねがいします。", zh: "請多關照。" },
+        { jp: "こちらは～さんです。", zh: "這位是～先生／小姐。" },
+        { jp: "～から きました。", zh: "我從～來。" }
+      ],
+      2: [
+  { jp: "これ", zh: "這個" }, { jp: "それ", zh: "那個" }, { jp: "あれ", zh: "那個（遠方）" },
+  { jp: "この～", zh: "這～" }, { jp: "その～", zh: "那～" }, { jp: "あの～", zh: "那～（遠方）" },
+  { jp: "ほん（本）", zh: "書" }, { jp: "じしょ（辞書）", zh: "字典" }, { jp: "ざっし（雑誌）", zh: "雜誌" },
+  { jp: "しんぶん（新聞）", zh: "報紙" }, { jp: "ノート", zh: "筆記本" }, { jp: "てちょう（手帳）", zh: "記事本" },
+  { jp: "めいし（名刺）", zh: "名片" }, { jp: "カード", zh: "卡片" }, { jp: "えんぴつ（鉛筆）", zh: "鉛筆" },
+  { jp: "ボールペン", zh: "原子筆" }, { jp: "シャープペンシル", zh: "自動鉛筆" }, { jp: "かぎ（鍵）", zh: "鑰匙" },
+  { jp: "かさ（傘）", zh: "傘" }, { jp: "かばん", zh: "包包、書包" }, { jp: "［カセット］テープ", zh: "錄音帶" },
+  { jp: "テープレコーダー", zh: "錄音機" }, { jp: "テレビ", zh: "電視" }, { jp: "ラジオ", zh: "收音機" },
+  { jp: "カメラ", zh: "相機" }, { jp: "コンピューター", zh: "電腦" }, { jp: "じどうしゃ（自動車）", zh: "汽車" },
+  { jp: "つくえ（机）", zh: "桌子" }, { jp: "いす（椅子）", zh: "椅子" }, { jp: "チョコレート", zh: "巧克力" },
+  { jp: "コーヒー", zh: "咖啡" }, { jp: "えいご（英語）", zh: "英語" }, { jp: "にほんご（日本語）", zh: "日語" },
+  { jp: "～ご（～語）", zh: "～語言" }, { jp: "なん（何）", zh: "什麼" }, { jp: "そう", zh: "是" },
+  { jp: "ちがいます", zh: "不是" }, { jp: "あのう", zh: "嗯…" }, { jp: "そうですか", zh: "是這樣啊" },
+  { jp: "あのう、ほんのきもちです。", zh: "那個，只是小意思。" },
+  { jp: "どうぞ", zh: "請…" }, { jp: "どうも", zh: "謝了" },
+  { jp: "［どうも］ありがとうございます。", zh: "非常謝謝您。" },
+  { jp: "これから おせわに なります。", zh: "今後會承蒙您的照顧。" },
+  { jp: "こちらこそ よろしく。", zh: "我才要請您多多關照。" }
+],
+      3: [
+  { jp: "ここ", zh: "這裡" }, { jp: "そこ", zh: "那裡" }, { jp: "あそこ", zh: "那裡（遠方）" },
+  { jp: "どこ", zh: "哪裡" }, { jp: "こちら", zh: "這邊（禮貌說法）" }, { jp: "そちら", zh: "那邊（禮貌說法）" },
+  { jp: "あちら", zh: "那邊（遠方、禮貌說法）" }, { jp: "どちら", zh: "哪邊（禮貌說法）" },
+  { jp: "きょうしつ（教室）", zh: "教室" }, { jp: "しょくどう（食堂）", zh: "餐廳" },
+  { jp: "じむしょ（事務所）", zh: "辦公室" }, { jp: "かいぎしつ（会議室）", zh: "會議室" },
+  { jp: "うけつけ（受付）", zh: "接待處" }, { jp: "ロビー", zh: "大廳" },
+  { jp: "へや（部屋）", zh: "房間" }, { jp: "トイレ（おてあらい）", zh: "洗手間" },
+  { jp: "かいだん（階段）", zh: "樓梯" }, { jp: "エレベーター", zh: "電梯" },
+  { jp: "エスカレーター", zh: "手扶梯" }, { jp: "［お］くに（国）", zh: "國家" },
+  { jp: "かいしゃ（会社）", zh: "公司" }, { jp: "うち", zh: "家" },
+  { jp: "でんわ（電話）", zh: "電話" }, { jp: "くつ（靴）", zh: "鞋子" },
+  { jp: "ネクタイ", zh: "領帶" }, { jp: "ワイン", zh: "葡萄酒" },
+  { jp: "たばこ", zh: "香菸" }, { jp: "うりば（売り場）", zh: "賣場、櫃檯" },
+  { jp: "ちか（地下）", zh: "地下" }, { jp: "～かい（～階）", zh: "～樓" },
+  { jp: "なんがい（何階）", zh: "幾樓" }, { jp: "～えん（～円）", zh: "～日圓" },
+  { jp: "いくら", zh: "多少錢" }, { jp: "ひゃく（百）", zh: "一百" },
+  { jp: "せん（千）", zh: "一千" }, { jp: "まん（万）", zh: "一萬" },
+  { jp: "すみません", zh: "對不起，請問…" },
+  { jp: "～でございます", zh: "～是（です的禮貌說法）" },
+  { jp: "～を みせて ください", zh: "請讓我看～" }, { jp: "じゃ", zh: "那麼" },
+  { jp: "［～を］ ください", zh: "請給我［～］" }
+]
+    };
+
+    let currentLesson = [];
+    let currentWord = {};
+    let score = 0;
+    let highscore = localStorage.getItem('highscore_l1to3') || 0;
+    document.getElementById('highscore').textContent = highscore;
+
+    function selectLesson(number) {
+      currentLesson = lessons[number];
+      score = 0;
+      document.getElementById('score').textContent = score;
+      document.getElementById('word').textContent = `已選擇第${number}課，請點選下一個單字或按下方單字`; 
+      document.getElementById('meaning').style.display = 'none';
+      renderWordButtons();
+    }
+
+    function nextWord() {
+      if (currentLesson.length === 0) return;
+      currentWord = currentLesson[Math.floor(Math.random() * currentLesson.length)];
+      document.getElementById('word').textContent = currentWord.jp;
+      document.getElementById('meaning').textContent = currentWord.zh;
+      document.getElementById('meaning').style.display = 'block';
+
+      score += 10;
+      document.getElementById('score').textContent = score;
+      if (score > highscore) {
+        highscore = score;
+        localStorage.setItem('highscore_l1to3', highscore);
+        document.getElementById('highscore').textContent = highscore;
+      }
+    }
+
+    function speakWord() {
+      if (currentWord.jp) {
+        const utterance = new SpeechSynthesisUtterance(currentWord.jp);
+        utterance.lang = 'ja-JP';
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    function resetScore() {
+      score = 0;
+      document.getElementById('score').textContent = score;
+    }
+
+    function speakCustomWord(jp) {
+      const utterance = new SpeechSynthesisUtterance(jp);
+      utterance.lang = 'ja-JP';
+      speechSynthesis.speak(utterance);
+    }
+
+    function renderWordButtons() {
+      const container = document.getElementById('wordButtons');
+      container.innerHTML = '';
+      currentLesson.forEach(word => {
+        const btn = document.createElement('button');
+        btn.textContent = `${word.jp} (${word.zh})`;
+        btn.onclick = () => speakCustomWord(word.jp);
+        container.appendChild(btn);
+      });
+    }
+  </script>
+</body>
+</html>
