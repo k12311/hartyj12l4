@@ -213,10 +213,12 @@
     }
 
     function speakCustomWord(jp) {
-      const utterance = new SpeechSynthesisUtterance(jp);
-      utterance.lang = 'ja-JP';
-      speechSynthesis.speak(utterance);
-    }
+       window.speechSynthesis.onvoiceschanged = () => {
+    const voices = window.speechSynthesis.getVoices();
+    console.log("支援的語音：");
+    voices.forEach(v => console.log(v.lang, v.name));
+  };
+
 
     function renderWordButtons() {
       const container = document.getElementById('wordButtons');
